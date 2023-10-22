@@ -1,19 +1,22 @@
 import React from "react";
-
 import Button from "components/Button";
-
 import iconPlus from "assets/images/plus.png";
-
-import * as S from "./styled";
+import { SideBarWrapper, SideBarItem, SideBarList } from "./styled";
 
 const Sidebar = () => (
-  <S.SideBarWrapper>
-    <S.SideBarList>
-      <S.SideBarItem>?</S.SideBarItem>
-    </S.SideBarList>
+  <SideBarWrapper>
 
+    <SideBarList>
+      <SideBarItem>?</SideBarItem>
+    </SideBarList>
+
+    <SideBarList>
+      <SideBarItem>?</SideBarItem>
+    </SideBarList>
+    
     <Button icon={iconPlus} />
-  </S.SideBarWrapper>
+
+  </SideBarWrapper>
 );
 
 export default Sidebar;
