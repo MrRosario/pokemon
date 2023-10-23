@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { findHpStats, randomNumberGenerator } from "utils";
 import Modal from "components/Modal";
 import Sidebar from "components/Sidebar";
@@ -8,15 +8,19 @@ import CharacterFronIcon from "assets/images/ashFront.png";
 import SearchTooltipIcon from "assets/images/searchTooltip.png";
 import SearchingTooltipIcon from "assets/images/searchingTooltip.png";
 import TooltipErrorIcon from "assets/images/tooltipError.png";
+// import { translateText } from "services/Translate";
+import PokemonContext from "context/pokemonContext";
 
 const POKEMON_START = 1;
 const POKEMON_LIMIT = 807;
 
 const MapPage = () => {
   const [isMouseOvering, setIsMouseOvering] = useState(false);
-  const { fetch, data: pokemon, isLoading, error } = useFetch();
-  const [pokemonData, setPokemonData] = useState(null);
+  const { fetch, data: DataFetched, isLoading, error } = useFetch();
+  const { setNewPokemon, storedPokemons } = useContext(PokemonContext);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [currentTypes, setCurrentTypes] = useState([]);
 
   const handleMouseOver = () => {
     setIsMouseOvering(!isMouseOvering);
@@ -27,33 +31,54 @@ const MapPage = () => {
 
     setIsModalOpen(true);
 
-    // fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
   };
 
+  // const textTranslation = (text) => {
+  //   return translateText(text)
+  //     .then((result) => {
+  //       return result;
+  //       // setCurrentTypes((old) => [...old, result]);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       return null;
+  //     });
+  // };
+
   useEffect(() => {
-    if (!pokemon) return;
+    if (!DataFetched) return;
 
-    const { name, height, weight, sprites, stats, id } = pokemon.data;
+    const { name, height, weight, sprites, stats, id, abilities } =
+      DataFetched.data;
 
-    setPokemonData({
+    const obj = {
       id,
       name,
       height,
       weight,
       avatar: sprites?.front_default,
       hp: findHpStats(stats),
-    });
+      abilities: abilities.map((item) => item.ability.name),
+      statistics: stats.filter((stat) => stat.stat.name !== "hp"),
+      // types: currentTypes,
+    };
+
+    setNewPokemon(obj);
 
     setIsModalOpen(true);
-  }, [pokemon]);
+    console.log("Novo Fetch");
+  }, [DataFetched]);
 
-  console.log("pokemon: ", pokemon);
-  console.log("pokemonData: ", pokemonData);
+  const handleOpenPokemon = (pokemon) => {
+    setNewPokemon(pokemon);
+    setIsModalOpen(true);
+  };
 
   return (
     <>
       <S.MapWrapper className="map">
-        <Sidebar />
+        <Sidebar handleOpenPokemon={handleOpenPokemon} />
 
         <S.CharacterWrapper>
           <S.TooltipWrapper>
@@ -79,9 +104,7 @@ const MapPage = () => {
         </S.CharacterWrapper>
       </S.MapWrapper>
 
-      {isModalOpen && (
-        <Modal setIsModalOpen={setIsModalOpen} isOpen={isModalOpen} />
-      )}
+      {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
     </>
   );
 };
