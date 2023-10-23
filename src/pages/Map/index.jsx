@@ -67,7 +67,6 @@ const MapPage = () => {
     setNewPokemon(obj);
 
     setIsModalOpen(true);
-    console.log("Novo Fetch");
   }, [DataFetched]);
 
   const handleOpenPokemon = (pokemon) => {
