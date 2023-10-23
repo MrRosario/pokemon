@@ -54,6 +54,12 @@ export default createGlobalStyle`
     font-weight: 700;
   }
 
+  button:disabled {
+    background-color: #ccc;
+    color: #fff;
+    cursor: no-drop;
+  }
+
   p {
     font-size: 1rem;
     line-height: 1.6;
