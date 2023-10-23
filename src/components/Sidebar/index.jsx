@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "components/Button";
 import iconPlus from "assets/images/plus.png";
-import { SideBarWrapper, SideBarItem, SideBarList } from "./styled";
+import * as S from "./styled";
+import PokemonContext from "context/pokemonContext";
 
-const Sidebar = () => (
-  <SideBarWrapper>
+const Sidebar = ({ handleOpenPokemon }) => {
+  const { storedPokemons } = useContext(PokemonContext);
 
-    <SideBarList>
-      <SideBarItem>?</SideBarItem>
-    </SideBarList>
-
-    <SideBarList>
-      <SideBarItem>?</SideBarItem>
-    </SideBarList>
-    
-    <Button icon={iconPlus} />
-
-  </SideBarWrapper>
-);
+  return (
+    <S.SideBarWrapper>
+      <S.SideBarList>
+        {storedPokemons.map((pokemon, index) => (
+          <S.SideBarItem key={index} onClick={() => handleOpenPokemon(pokemon)}>
+            <S.SidebarAvatar src={pokemon.avatar} alt="avatar" />
+          </S.SideBarItem>
+        ))}
+      </S.SideBarList>
+      <Button icon={iconPlus} />
+    </S.SideBarWrapper>
+  );
+};
 
 export default Sidebar;
